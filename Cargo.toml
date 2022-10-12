@@ -1,0 +1,18 @@
+[package]
+name = "mogul-php"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+mogul = { path = "../mogul" }
+ext-php-rs = "= 0.8.0"
+serde = { version = "1.0.144", features = ["derive"] }
+serde_json = "1.0"
+#uuid = { version = "1.1.2", features = ["serde", "v4"] }
+#ext-php-rs = { git = "https://github.com/davidcole1340/ext-php-rs", branch = "master", features = ["anyhow"] }
+#anyhow = "*"
+
+[lib]
+crate-type = ["cdylib"]
