@@ -1,4 +1,5 @@
 #![cfg_attr(windows, feature(abi_vectorcall))]
+#[allow(unused_imports)]
 use ext_php_rs::{prelude::*, convert::FromZval};
 use mogul::*;
 //use serde::{Serialize, Deserialize};
@@ -7,40 +8,25 @@ use mogul::*;
 
 
 #[php_class]
-pub struct MogulHl {
-    mogul: MogulHandler,
-}
-
-impl From<MogulHandler> for MogulHl {
-    fn from(item: MogulHandler) -> Self {
-        MogulHl {
-            mogul: item,
-        }
-    }
-}
+pub struct MogulHl(MogulHandler);
 
 #[php_function]
 pub fn mogule_handler_new_start() -> MogulHl {
-    MogulHl::from(MogulHandler::new_start())
+    MogulHl(MogulHandler::new_start())
 }
 
 #[php_impl]
 impl MogulHl {
-    pub fn __construct(json: String) -> Self {
-        Self {
-            mogul: serde_json::from_str(&json).unwrap(),
-        }
-    }
     pub fn define_new_state(&mut self)  {
-        self.mogul.define_new_state();
+        self.0.define_new_state();
     }
 
     pub fn serialize(&self) -> String {
-        serde_json::to_string(&self.mogul).unwrap().to_string()
+        serde_json::to_string(&self.0).unwrap().to_string()
     }
 
     pub fn allow_merge(original: &MogulHl, challenger: &MogulHl) -> PhpResult {
-        match mogul_allow_update(&original.mogul, &challenger.mogul) {
+        match mogul_allow_update(&original.0, &challenger.0) {
             Ok(()) => Ok(()),
             Err(MogulError::ChallengerOlderThanOriginal) => {
                 Err(PhpException::default("Challenger older than the original".into()))
@@ -57,12 +43,9 @@ impl MogulHl {
         }
     }
 
-    pub fn merge(original:  MogulHl, challenger: MogulHl) -> MogulHl {
-        MogulHl {
-            mogul: mogul_merge(&original.mogul, &challenger.mogul)
-        }
+    pub fn merge(original:  &MogulHl, challenger: &MogulHl) -> MogulHl {
+        MogulHl(mogul_merge(&original.0, &challenger.0))
     }
-
 }
 
 #[php_module]

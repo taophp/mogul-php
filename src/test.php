@@ -18,11 +18,9 @@
 /*/
 
 $original = mogule_handler_new_start();
-var_dump($original);
+var_dump($original->serialize());
 $original->defineNewState();
-$original->defineNewState();
-$original->defineNewState();
-var_dump($original);
 var_dump($original->serialize());
 $challengerNotSame = mogule_handler_new_start();
+var_dump(MogulHl::allow_merge($original,$challengerNotSame));
 
